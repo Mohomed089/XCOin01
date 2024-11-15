@@ -1,0 +1,6 @@
+kivy
+time
+adb-shell
+pyjnius
+threading
+uiautomator2
