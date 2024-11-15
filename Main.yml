@@ -1,0 +1,49 @@
+name: Build APK and IPA for Python Mobile App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # الخطوة 1: الحصول على الكود من المستودع
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    # الخطوة 2: إعداد بيئة بايثون
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    
+    # الخطوة 3: تثبيت الاعتمادات المطلوبة (مثل Buildozer أو BeeWare)
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install buildozer  # أو أداة أخرى حسب احتياجك
+
+    # الخطوة 4: بناء APK (لـ Android)
+    - name: Build APK for Android
+      run: |
+        buildozer android debug  # هذا الأمر يعتمد على تكوين Buildozer الخاص بك
+
+    # الخطوة 5: بناء IPA (لـ iOS)
+    - name: Build IPA for iOS
+      run: |
+        buildozer ios debug  # هذا يعتمد أيضًا على تكوين Buildozer الخاص بك
+
+    # الخطوة 6: رفع APK و IPA (اختياري)
+    - name: Upload APK and IPA to GitHub
+      uses: actions/upload-artifact@v2
+      with:
+        name: mobile-apps
+        path: |
+          bin/*.apk
+          bin/*.ipa
